@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Source\App\AbstractController;
 use Source\Product\ProductFactory;
 use Source\Product\ProductRepository;
+use Source\Product\Query\UpdateProductQuery;
 
 class ProductController extends AbstractController
 {
@@ -33,9 +34,9 @@ class ProductController extends AbstractController
 
     public function addProductAction(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        try {
-            $body = $this->parseRequestBody($request);
+        $body = $this->parseRequestBody($request);
 
+        try {
             $this->productRepository->addNewProduct(ProductFactory::build($body));
         } catch (Exception $e) {
             return $this->sendError($response, $e);
@@ -46,8 +47,16 @@ class ProductController extends AbstractController
 
     public function updateProductAction(RequestInterface $request, ResponseInterface $response, $args): ResponseInterface
     {
-        $response->getBody()->write("CONTROLLER: ROUTE ".$request->getMethod().": ".$request->getRequestTarget());
+        try {
+            $updateProductQuery = new UpdateProductQuery(
+                intval($args['id']),
+                floatval($this->parseRequestBody($request)['price'])
+            );
+            $this->productRepository->updateProductPriceById($updateProductQuery);
+        } catch (Exception $e) {
+            return $this->sendError($response, $e);
+        }
 
-        return $response;
+        return $response->withStatus(200, "OK");
     }
 }

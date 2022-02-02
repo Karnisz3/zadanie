@@ -6,6 +6,7 @@ namespace Source\Product;
 use InvalidArgumentException;
 use PDOException;
 use Source\App\AbstractRepository;
+use Source\Product\Query\UpdateProductQuery;
 
 class ProductRepository extends AbstractRepository
 {
@@ -46,6 +47,24 @@ class ProductRepository extends AbstractRepository
             } else {
                 throw $e;
             }
+        }
+    }
+
+    public function updateProductPriceById(UpdateProductQuery $updateProductQuery)
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE products 
+            SET price = :price 
+            WHERE product_id = :id"
+        );
+
+        $stmt->execute([
+            'price' => $updateProductQuery->getNewPrice(),
+            'id' => $updateProductQuery->getId()
+        ]);
+
+        if ($stmt->rowCount() < 1) {
+            throw new InvalidArgumentException("Product with this ID doesn't exist");
         }
     }
 }

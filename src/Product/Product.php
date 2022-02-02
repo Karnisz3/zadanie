@@ -21,7 +21,7 @@ class Product implements Arrayable
         $this->id = $id;
         $this->title = $title;
         $this->price = $price;
-        $this->currency = $currency;
+        $this->currency = strtoupper($currency);
 
         $this->validate();
     }
@@ -84,19 +84,17 @@ class Product implements Arrayable
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'price' => $this->price,
-            'currency' => $this->currency,
-            'priceString' => $this->getPriceString()
+            'price' => $this->getPriceString()
         ];
     }
 
     private function validate(): void
     {
         if (!$this->title || strlen($this->title) < 3) {
-            throw new InvalidArgumentException("Title is requires and must have at least 3 characters");
+            throw new InvalidArgumentException("Title is required and must have at least 3 characters");
         }
 
-        if (!$this->price || $this->price < 0) {
+        if (!$this->price || !($this->price > 0)) {
             throw new InvalidArgumentException("Price is invalid");
         }
 

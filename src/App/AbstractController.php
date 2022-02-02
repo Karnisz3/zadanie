@@ -48,6 +48,6 @@ abstract class AbstractController
     {
         $body = $request->getBody()->getContents();
 
-        return json_decode($body, true);
+        return json_decode($body, true) ?? [];
     }
 }
