@@ -9,16 +9,13 @@ use Psr\Http\Message\ResponseInterface;
 use Source\App\AbstractController;
 use Source\Cart\CartRepository;
 use Source\Cart\Query\AddProductToCartQuery;
-use Source\Product\ProductRepository;
 
 class CartController extends AbstractController
 {
-    private ProductRepository $productRepository;
     private CartRepository $cartRepository;
 
-    public function __construct(ProductRepository $productRepository, CartRepository $cartRepository)
+    public function __construct(CartRepository $cartRepository)
     {
-        $this->productRepository = $productRepository;
         $this->cartRepository = $cartRepository;
     }
 
