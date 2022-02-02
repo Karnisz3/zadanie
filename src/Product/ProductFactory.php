@@ -9,7 +9,7 @@ class ProductFactory
     {
         return new Product(
             (int)$data['id'],
-            $data['title'],
+            filter_var($data['title'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             (float)$data['price'],
             $data['currency']
         );
