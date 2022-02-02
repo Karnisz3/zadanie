@@ -5,8 +5,9 @@ namespace Source\Controllers;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Source\App\AbstractController;
 
-class CartController
+class CartController extends AbstractController
 {
     public function createCartAction(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
