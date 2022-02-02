@@ -23,7 +23,7 @@ class CartController extends AbstractController
     {
         try {
             $newCart = $this->cartRepository->createNewCart();
-            $response->withHeader(201, "Created");
+            $response->withStatus(201, "Created");
         } catch (Exception $e) {
             return $this->sendError($response, $e);
         }
