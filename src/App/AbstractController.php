@@ -12,18 +12,25 @@ use Psr\Http\Message\ResponseInterface;
 abstract class AbstractController
 {
 
-    protected function sendJson(ResponseInterface $response, Arrayable $data): ResponseInterface
+    /**
+     * @param ResponseInterface $response
+     * @param Arrayable|array $data 
+     */
+    protected function sendJson(ResponseInterface $response, $data): ResponseInterface
     {
         $response->withHeader("Content-Type", "application/json");
 
         if (empty($data)) {
-            $response->withStatus(204, "No Content");
-        } else {
-            $response->getBody()->write(json_encode($data->toArray()));
-            $response->withStatus(200, "OK");
+            return $response->withStatus(204, "No Content");
+        }
+        
+        if ($data instanceof Arrayable) {
+            $data = $data->toArray();
         }
 
-        return $response;
+        $response->getBody()->write(json_encode($data));
+
+        return $response->withStatus(200, "OK");
     }
 
     protected function sendError(ResponseInterface $response, Exception $exception): ResponseInterface
@@ -34,7 +41,7 @@ abstract class AbstractController
             $response->getBody()->write(json_encode(['error' => $exception->getMessage()]));
             $response->withStatus(400, "Bad Request");
         } else if ($exception instanceof PDOException) {
-            $response->getBody()->write(json_encode(['error' => "Internal Database problem"]));
+            $response->getBody()->write(json_encode(['error' => $exception->getMessage()]));
             $response->withStatus(500, "Internal Servel Error");
         } else {
             $response->getBody()->write(json_encode(['error' => "Internal API problem"]));
